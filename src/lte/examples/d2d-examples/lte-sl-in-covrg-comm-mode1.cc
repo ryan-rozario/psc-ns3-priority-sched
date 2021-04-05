@@ -118,6 +118,8 @@ NS_LOG_COMPONENT_DEFINE ("LteSlInCovrgCommMode1");
 
 int main (int argc, char *argv[])
 {
+  LogComponentEnable ("RrSlFfMacScheduler", LOG_LEVEL_INFO);
+
   Time simTime = Seconds (6);
   bool enableNsLogs = false;
   bool useIPv6 = false;

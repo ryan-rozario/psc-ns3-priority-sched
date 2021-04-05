@@ -38,6 +38,7 @@
 #include <ns3/math.h>
 #include <cfloat>
 #include <set>
+#include <algorithm>
 #include <climits>
 
 #include <ns3/lte-amc.h>
@@ -1264,13 +1265,13 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
 
       std::map <uint16_t,uint32_t>::iterator it;
 
-      for (it = poolIt->second.m_ceSlBsrRxed.begin (); it != poolIt->second.m_ceSlBsrRxed.end (); it++)
+      for (it = poolIt->second.m_RntiPriority.begin(); it != poolIt->second.m_RntiPriority.end(); it++)
         {
-          if (poolIt->second.m_nextAllocation.find ((*it).first) == poolIt->second.m_nextAllocation.end ())
+          if (poolIt->second.m_nextAllocation.find ((*it).second) == poolIt->second.m_nextAllocation.end ())
             {
               //new allocation
               PoolUserAllocation alloc;
-              alloc.m_rnti = it->first;
+              alloc.m_rnti = it->second;
               alloc.m_resPscch = poolIt->second.m_nextAllocation.size ();
               alloc.m_slItrp = m_slItrp;
               alloc.m_rbStart = poolIt->second.m_nextAllocation.size () * m_slGrantSize;
@@ -1290,8 +1291,8 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
                   txIt->subframe.subframeNo++;
                 }
 
-              poolIt->second.m_nextAllocation.insert (std::pair <uint16_t, PoolUserAllocation> (it->first, alloc));
-              NS_LOG_INFO (this << " Adding Sidelink allocation for RNTI " << it->first << " in pool " << poolIt->first << " RbStart=" << (uint32_t) alloc.m_rbStart << ", rbLen=" << (uint32_t) alloc.m_rbLen << ", itrp=" << (uint32_t) alloc.m_slItrp);
+              poolIt->second.m_nextAllocation.insert (std::pair <uint16_t, PoolUserAllocation> (it->second, alloc));
+              NS_LOG_INFO (this << " Adding Sidelink allocation for RNTI " << it->second << " in pool " << poolIt->first << " RbStart=" << (uint32_t) alloc.m_rbStart << ", rbLen=" << (uint32_t) alloc.m_rbLen << ", itrp=" << (uint32_t) alloc.m_slItrp);
 
 
               SlDciListElement_s dci;
@@ -1319,6 +1320,9 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
             }
         }
       poolIt->second.m_ceSlBsrRxed.clear ();
+
+      //clear the priority values
+      poolIt->second.m_RntiPriority.clear ();
     }
 
 
@@ -1824,6 +1828,12 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                       // create the new entry
                       poolIt->second.m_ceSlBsrRxed.insert ( std::pair<uint16_t, uint32_t > (rnti, buffer));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Sidelink queue " << buffer);
+
+                      //set the initial priority value
+                      uint32_t priority_val = 1;
+                      poolIt->second.m_RntiPriority.insert ( std::pair<uint16_t, uint32_t > (priority_val, rnti));
+                      NS_LOG_INFO (this << " Insert RNTI " << rnti << " Priority value " << priority_val);
+
                     }
                   else
                     {

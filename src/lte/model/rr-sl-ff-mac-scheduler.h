@@ -416,6 +416,8 @@ private:
 
     std::map <uint16_t,uint32_t> m_ceSlBsrRxed; ///< map the RNTI and Sidelink BSR request
 
+    std::map <uint16_t,uint32_t>  m_RntiPriority; ///< map the and Priority of request RNTI 
+
     std::map <uint16_t, PoolUserAllocation> m_currentAllocation; ///< map the RNTI and current allocation
     std::map <uint16_t, PoolUserAllocation> m_nextAllocation; ///< map the RNTI and next allocation
     bool m_init; ///< Flag to indicate whether the pool is initialized
