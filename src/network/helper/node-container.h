@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "/Users/shashank/changed/psc-ns3-3.0.1/src/network/model/node1.h"
+#include "node1.h"
 
 namespace ns3 {
 

@@ -20,7 +20,7 @@
 #include "node-container.h"
 #include "ns3/node-list.h"
 #include "ns3/names.h"
-#include "/Users/shashank/changed/psc-ns3-3.0.1/src/network/model/node1.h"
+#include "ns3/node.h"
 
 namespace ns3 {
 
