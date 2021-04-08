@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "ns3/node.h"
+#include "/Users/shashank/changed/psc-ns3-3.0.1/src/network/model/node1.h"
 
 namespace ns3 {
 
@@ -250,6 +250,14 @@ public:
    * \param n The number of Nodes to create
    */
   void Create (uint32_t n);
+
+
+  /** 
+    New function 
+
+  */  
+
+  void Create (uint32_t n, char type);
 
   /**
    * \brief Create n nodes with specified systemId for distributed simulations 

@@ -20,6 +20,7 @@
 #include "node-container.h"
 #include "ns3/node-list.h"
 #include "ns3/names.h"
+#include "/Users/shashank/changed/psc-ns3-3.0.1/src/network/model/node1.h"
 
 namespace ns3 {
 
@@ -94,6 +95,7 @@ NodeContainer::Get (uint32_t i) const
 {
   return m_nodes[i];
 }
+
 void 
 NodeContainer::Create (uint32_t n)
 {
@@ -102,6 +104,19 @@ NodeContainer::Create (uint32_t n)
       m_nodes.push_back (CreateObject<Node> ());
     }
 }
+
+
+// New function added to contain the type of node created 
+void 
+NodeContainer::Create (uint32_t n, char type)
+{
+  for (uint32_t i = 0; i < n; i++)
+    {
+      m_nodes.push_back (CreateObject<Node1> (type));
+    }
+}
+
+
 void 
 NodeContainer::Create (uint32_t n, uint32_t systemId)
 {
