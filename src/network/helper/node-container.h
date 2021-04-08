@@ -251,6 +251,14 @@ public:
    */
   void Create (uint32_t n);
 
+
+  /** 
+    New function 
+
+  */  
+
+  void Create (uint32_t n, char type);
+
   /**
    * \brief Create n nodes with specified systemId for distributed simulations 
    * and append pointers to them to the end of this NodeContainer.
