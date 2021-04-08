@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "node1.h"
+#include "ns3/node.h"
 
 namespace ns3 {
 

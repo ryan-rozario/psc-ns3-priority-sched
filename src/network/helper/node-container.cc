@@ -20,7 +20,7 @@
 #include "node-container.h"
 #include "ns3/node-list.h"
 #include "ns3/names.h"
-#include "ns3/node.h"
+#include "node1.h"
 
 namespace ns3 {
 
