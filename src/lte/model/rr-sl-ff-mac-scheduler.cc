@@ -38,7 +38,6 @@
 #include <ns3/math.h>
 #include <cfloat>
 #include <set>
-#include <algorithm>
 #include <climits>
 
 #include <ns3/lte-amc.h>
