@@ -263,17 +263,28 @@ public:
    */
   std::list <uint32_t> GetTxDestinations ();
   /**
+   * \brief Get node type
+   * \return This gives the type of node psc or commercial
+   */
+
+  uint8_t GetNodeType ();
+
+    /**
+   * \brief Set node type
+   * \param nodeTypeValue value based on the type of node
+   * \return This sets the type of node psc or commercial
+   */
+
+  void SetNodeType (uint8_t nodeTypeValue );
+
+  /**
    * \brief Add Sidelink radio bearer function
    * Attempts to add a sidelink radio bearer
    * \param slb LteSidelinkRadioBearerInfo pointer
    * \return True if the sidelink was successfully added, else false such as when
    * an identical bearer already exists
    */
-  uint8_t GetNodeType ();
-  /**
-   * \brief Get discovery inter frequency function
-   * \return The frequency that the UE is supposed to monitor for discovery announcements
-   */
+
   bool AddSidelinkRadioBearer (Ptr<LteSidelinkRadioBearerInfo> slb);
   /**
    * \brief Delete Sidelink radio bearer function

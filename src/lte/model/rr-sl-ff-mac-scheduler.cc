@@ -1834,6 +1834,9 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                   std::map <uint32_t, PoolInfo>::iterator poolIt = m_poolAllocations.find (destination);
                   NS_ASSERT_MSG (poolIt != m_poolAllocations.end (), "Sidelink destination " << destination << "unknown.");
 
+                  uint8_t nodeTypeForPriority = m_uesNodeType.at(rnti);
+                  NS_LOG_INFO (this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority));
+
                   itSlBsr = poolIt->second.m_ceSlBsrRxed.find (rnti);
                   if (itSlBsr == poolIt->second.m_ceSlBsrRxed.end ())
                     {

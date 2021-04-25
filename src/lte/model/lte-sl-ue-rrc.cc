@@ -296,6 +296,12 @@ LteSlUeRrc::GetNodeType ()
   return nodeType;
 }
 
+void
+LteSlUeRrc::SetNodeType (uint8_t nodeTypeValue )
+{
+  nodeType = nodeTypeValue;
+}
+
 uint8_t
 LteSlUeRrc::GetDiscTxResources ()
 {

@@ -236,6 +236,7 @@ int main (int argc, char *argv[])
   Ptr<LteSlEnbRrc> enbSidelinkConfiguration = CreateObject<LteSlEnbRrc> ();
   enbSidelinkConfiguration->SetSlEnabled (true);
 
+
   //Preconfigure pool for the group
   LteRrcSap::SlCommTxResourcesSetup pool;
 
@@ -271,8 +272,14 @@ int main (int argc, char *argv[])
   //pre-configuration for the UEs
   Ptr<LteSlUeRrc> ueSidelinkConfiguration = CreateObject<LteSlUeRrc> ();
   ueSidelinkConfiguration->SetSlEnabled (true);
+
+  uint8_t test_val = 0;
+
+  
+
   LteRrcSap::SlPreconfiguration preconfiguration;
   ueSidelinkConfiguration->SetSlPreconfiguration (preconfiguration);
+  ueSidelinkConfiguration->SetNodeType (test_val);
   lteHelper->InstallSidelinkConfiguration (ueDevs, ueSidelinkConfiguration);
 
   InternetStackHelper internet;
