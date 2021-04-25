@@ -922,6 +922,15 @@ LteUeMac::DoSetImsi (uint64_t imsi)
   m_imsi = imsi;
 }
 
+/*
+void
+LteUeMac::DoSetNodeType (uint64_t nodeType)
+{
+  NS_LOG_FUNCTION (this);
+  m_nodeType = nodeType;
+}
+*/
+
 
 void
 LteUeMac::DoStartNonContentionBasedRandomAccessProcedure (uint16_t rnti, uint8_t preambleId, uint8_t prachMask)

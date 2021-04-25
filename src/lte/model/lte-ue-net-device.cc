@@ -148,6 +148,8 @@ LteUeNetDevice::UpdateConfig (void)
 {
   NS_LOG_FUNCTION (this);
 
+  
+
   if (m_isConstructed)
     {
       NS_LOG_LOGIC (this << " Updating configuration: IMSI " << m_imsi
@@ -178,8 +180,16 @@ LteUeNetDevice::GetMac (void) const
 Ptr<LteUeRrc>
 LteUeNetDevice::GetRrc (void) const
 {
+  //std::cout << this << std::endl;
   NS_LOG_FUNCTION (this);
   return m_rrc;
+}
+
+void
+LteUeNetDevice::SetNodeType (uint8_t nt)
+{
+  NS_LOG_FUNCTION (this);
+  m_rrc->SetNodeType(nt);
 }
 
 

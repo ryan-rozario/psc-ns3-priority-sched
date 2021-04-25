@@ -277,14 +277,6 @@ public:
 
   void SetNodeType (uint8_t nodeTypeValue );
 
-  /**
-   * \brief Add Sidelink radio bearer function
-   * Attempts to add a sidelink radio bearer
-   * \param slb LteSidelinkRadioBearerInfo pointer
-   * \return True if the sidelink was successfully added, else false such as when
-   * an identical bearer already exists
-   */
-
   bool AddSidelinkRadioBearer (Ptr<LteSidelinkRadioBearerInfo> slb);
   /**
    * \brief Delete Sidelink radio bearer function

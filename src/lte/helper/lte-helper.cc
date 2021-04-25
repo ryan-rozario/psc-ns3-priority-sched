@@ -70,6 +70,10 @@
 #include <ns3/friis-spectrum-propagation-loss.h>
 #include <ns3/propagation-loss-model.h>
 
+#include "node1.h"
+
+
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("LteHelper");
@@ -1046,6 +1050,14 @@ LteHelper::InstallSingleUeDevice (Ptr<Node> n)
       ueSidelinkConfiguration->SetLteSlUeCtrlSapProvider (slUeCtrl->GetLteSlUeCtrlSapProvider ());
       slUeCtrl->SetLteSlUeCtrlSapUser (ueSidelinkConfiguration->GetLteSlUeCtrlSapUser ());
       slUeCtrl->SetAttribute ("NetDevice", PointerValue (dev));
+
+
+      //uint8_t nodeType;
+      //nodeType = n->type;
+
+      //std::cout<<"nodetype in lte helper"<<unsigned(nodeType)<<std::endl;
+
+      ueSidelinkConfiguration->SetNodeType(0);
     }
 
   dev->SetNode (n);
