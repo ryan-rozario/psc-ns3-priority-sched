@@ -47,6 +47,8 @@
 #include <ns3/lte-vendor-specific-parameters.h>
 #include <ns3/boolean.h>
 
+#include <algorithm>
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("RrSlFfMacScheduler");
@@ -1275,12 +1277,15 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
           NS_LOG_DEBUG ("Pool already initialized");
         }
 
-      std::map <uint16_t,uint32_t>::iterator it;
+      std::vector<std::pair<uint16_t,uint32_t>>::iterator it;
+
+      std::sort(poolIt->second.m_RntiPriority.begin(), poolIt->second.m_RntiPriority.end());
 
       for (it = poolIt->second.m_RntiPriority.begin(); it != poolIt->second.m_RntiPriority.end(); it++)
         {
           if (poolIt->second.m_nextAllocation.find ((*it).second) == poolIt->second.m_nextAllocation.end ())
             {
+              std::cout<< it->second <<" priority alloc test "<< it->first<<  std::endl;
               //new allocation
               PoolUserAllocation alloc;
               alloc.m_rnti = it->second;
@@ -1836,7 +1841,6 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
 
                   uint8_t nodeTypeForPriority = m_uesNodeType.at(rnti);
                   NS_LOG_INFO (this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority));
-                  std::cout << this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority) << std::endl;
 
       
 
@@ -1847,7 +1851,8 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                       poolIt->second.m_ceSlBsrRxed.insert ( std::pair<uint16_t, uint32_t > (rnti, buffer));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Sidelink queue " << buffer);
                       
-                      
+                      std::cout << this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority) << std::endl;
+
                       uint32_t priority_val;
                       //set the initial priority value
                       if (nodeTypeForPriority==1)
@@ -1858,7 +1863,7 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                         {
                           priority_val=50;
                         }
-                      poolIt->second.m_RntiPriority.insert ( std::pair<uint16_t, uint32_t > (priority_val, rnti));
+                      poolIt->second.m_RntiPriority.push_back ( std::pair<uint16_t, uint32_t > (priority_val, rnti));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Priority value " << priority_val);
 
                     }
