@@ -257,7 +257,7 @@ public:
 
   */  
 
-  void Create (uint32_t n, char type);
+  void Create_new (uint32_t n, uint8_t type);
 
   /**
    * \brief Create n nodes with specified systemId for distributed simulations 

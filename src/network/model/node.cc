@@ -128,6 +128,11 @@ Node::GetSystemId (void) const
   return m_sid;
 }
 
+void
+Node::SetNodeType(uint8_t nt){
+  nodeType = nt;
+}
+
 uint32_t
 Node::AddDevice (Ptr<NetDevice> device)
 {

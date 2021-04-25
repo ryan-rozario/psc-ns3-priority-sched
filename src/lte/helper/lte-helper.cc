@@ -1052,12 +1052,12 @@ LteHelper::InstallSingleUeDevice (Ptr<Node> n)
       slUeCtrl->SetAttribute ("NetDevice", PointerValue (dev));
 
 
-      //uint8_t nodeType;
-      //nodeType = n->type;
+      uint8_t nodeType;
+      nodeType = n->nodeType;
 
-      //std::cout<<"nodetype in lte helper"<<unsigned(nodeType)<<std::endl;
+      std::cout<<"nodetype in lte helper"<<unsigned(nodeType)<<std::endl;
 
-      ueSidelinkConfiguration->SetNodeType(0);
+      ueSidelinkConfiguration->SetNodeType(nodeType);
     }
 
   dev->SetNode (n);

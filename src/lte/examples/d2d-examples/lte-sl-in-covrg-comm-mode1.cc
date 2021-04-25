@@ -203,13 +203,16 @@ int main (int argc, char *argv[])
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  ueNodes.Create (m, 'P');
+  uint8_t psc_type = 1;
+  ueNodes.Create_new (m, psc_type);
 
   for(int i=0; i<m ; i++){
     NS_LOG_INFO ("PSC node id = [" << ueNodes.Get (i)->GetId () << "]");
   }
 
-  ueNodes.Create (n, 'C');
+  
+  uint8_t com_type = 2;
+  ueNodes.Create_new (n, com_type);
 
   for(int i=0; i<n ; i++){
     NS_LOG_INFO ("Commercial node id = [" << ueNodes.Get (i)->GetId () << "]");
@@ -289,9 +292,6 @@ int main (int argc, char *argv[])
   ueSidelinkConfiguration->SetSlEnabled (true);
   LteRrcSap::SlPreconfiguration preconfiguration;
   ueSidelinkConfiguration->SetSlPreconfiguration (preconfiguration);
-  
-  
-  
   lteHelper->InstallSidelinkConfiguration (ueDevs, ueSidelinkConfiguration);
 
   InternetStackHelper internet;

@@ -1836,6 +1836,9 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
 
                   uint8_t nodeTypeForPriority = m_uesNodeType.at(rnti);
                   NS_LOG_INFO (this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority));
+                  std::cout << this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority) << std::endl;
+
+      
 
                   itSlBsr = poolIt->second.m_ceSlBsrRxed.find (rnti);
                   if (itSlBsr == poolIt->second.m_ceSlBsrRxed.end ())
@@ -1843,9 +1846,18 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                       // create the new entry
                       poolIt->second.m_ceSlBsrRxed.insert ( std::pair<uint16_t, uint32_t > (rnti, buffer));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Sidelink queue " << buffer);
-
+                      
+                      
+                      uint32_t priority_val;
                       //set the initial priority value
-                      uint32_t priority_val = 1;
+                      if (nodeTypeForPriority==1)
+                        {
+                          priority_val=30;
+                        }
+                      else
+                        {
+                          priority_val=50;
+                        }
                       poolIt->second.m_RntiPriority.insert ( std::pair<uint16_t, uint32_t > (priority_val, rnti));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Priority value " << priority_val);
 
