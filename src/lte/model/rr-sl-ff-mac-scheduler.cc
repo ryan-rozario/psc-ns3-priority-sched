@@ -230,6 +230,18 @@ RrSlFfMacScheduler::DoCschedUeConfigReq (const struct FfMacCschedSapProvider::Cs
     {
       (*ueIt).second = params.m_slDestinations;
     }
+
+  //configure/update Sidelink UE Node Type
+  std::map <uint16_t,uint8_t>::iterator ueNodeTypeIt = m_uesNodeType.find (params.m_rnti);
+  if (ueNodeTypeIt == m_uesNodeType.end ())
+    {
+      m_uesNodeType.insert (std::pair <uint16_t, double> (params.m_rnti, params.m_nodeType));
+    }
+  else
+    {
+      (*ueNodeTypeIt).second = params.m_nodeType;
+    }
+
   return;
 }
 
@@ -269,6 +281,7 @@ RrSlFfMacScheduler::DoCschedUeReleaseReq (const struct FfMacCschedSapProvider::C
   NS_LOG_FUNCTION (this << " Release RNTI " << params.m_rnti);
 
   m_uesTxMode.erase (params.m_rnti);
+  m_uesNodeType.erase (params.m_rnti);
   m_dlHarqCurrentProcessId.erase (params.m_rnti);
   m_dlHarqProcessesStatus.erase  (params.m_rnti);
   m_dlHarqProcessesTimer.erase (params.m_rnti);

@@ -4409,6 +4409,7 @@ LteUeRrc::SendSidelinkUeInformation (bool txComm, bool rxComm, bool txDisc, bool
                   sidelinkUeInformation.haveCommTxResourceReq = true;
                   sidelinkUeInformation.slCommTxResourceReq.carrierFreq = GetUlEarfcn ();
                   sidelinkUeInformation.slCommTxResourceReq.slDestinationInfoList.nbDestinations = destinations.size ();
+                  sidelinkUeInformation.nodeType = m_sidelinkConfiguration->GetNodeType();
                   std::list <uint32_t>::iterator it;
                   int index = 0;
                   NS_ASSERT_MSG (destinations.size () <= MAXSL_DEST, "Maximum number of destinations (" << MAXSL_DEST << ") reached");

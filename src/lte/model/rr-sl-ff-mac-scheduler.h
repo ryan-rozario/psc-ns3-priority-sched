@@ -360,7 +360,7 @@ private:
 
   std::map <uint16_t,uint8_t> m_uesTxMode; ///< txMode of the UEs
 
-
+  std::map <uint16_t,uint8_t> m_uesNodeType; ///< NodeType of the UEs Commercial or PSC
 
   // HARQ attributes
   /**

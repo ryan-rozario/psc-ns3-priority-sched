@@ -1953,6 +1953,8 @@ public:
     bool discRxInterest; ///< Indicates that the UE is interested in monitoring Sidelink discovery announcements.
     bool haveDiscTxResourceReq; ///< Have discovery Tx resource request?
     uint8_t discTxResourceReq; ///< Indicates the number of separate discovery message(s) the UE wants to transmit every discovery period. Range = 1..63, use 0 as invalid
+    uint8_t nodeType; ///< type of node psc or commercial
+
   };
 };
 

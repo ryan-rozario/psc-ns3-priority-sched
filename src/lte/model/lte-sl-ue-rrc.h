@@ -269,6 +269,11 @@ public:
    * \return True if the sidelink was successfully added, else false such as when
    * an identical bearer already exists
    */
+  uint8_t GetNodeType ();
+  /**
+   * \brief Get discovery inter frequency function
+   * \return The frequency that the UE is supposed to monitor for discovery announcements
+   */
   bool AddSidelinkRadioBearer (Ptr<LteSidelinkRadioBearerInfo> slb);
   /**
    * \brief Delete Sidelink radio bearer function
@@ -720,6 +725,13 @@ private:
    * (to be set in the scenario)
    */
   uint8_t m_discTxResources;
+
+  /**
+   * This value is used to denote what the type of node is
+   * The node can be for public safety or for commercial purpose
+   */
+  uint8_t   nodeType; ///< type of node psc or commercial
+
   /**
    * frequency that the UE is supposed to monitor for discovery announcements
    */

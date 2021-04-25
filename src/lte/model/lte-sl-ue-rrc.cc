@@ -291,6 +291,12 @@ LteSlUeRrc::GetTxDestinations ()
 }
 
 uint8_t
+LteSlUeRrc::GetNodeType ()
+{
+  return nodeType;
+}
+
+uint8_t
 LteSlUeRrc::GetDiscTxResources ()
 {
   return m_discTxResources;
