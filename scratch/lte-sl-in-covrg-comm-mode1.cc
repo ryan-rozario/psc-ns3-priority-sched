@@ -194,8 +194,8 @@ int main (int argc, char *argv[])
   //Sidelink Round Robin scheduler
   lteHelper->SetSchedulerType ("ns3::RrSlFfMacScheduler");
 
-  int m = 10; // Number of PSC nodes
-  int n = 10; // Number of Commercial nodes
+  int m = 7; // Number of PSC nodes
+  int n = 4; // Number of Commercial nodes
   
 
   //Create nodes (eNb + UEs)
