@@ -1288,11 +1288,28 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
               //std::cout<< it->second <<" priority alloc test "<< it->first<<  std::endl;
               //new allocation
               PoolUserAllocation alloc;
+              uint8_t nodeTypeForPriority = m_uesNodeType.at(it->second);
+              uint8_t specialized_GrantSize;
+
+              if (nodeTypeForPriority==1)
+                {
+                  specialized_GrantSize=5;
+                }
+              else
+                {
+                  specialized_GrantSize=1;
+                }
+
+
+
+
+
+
               alloc.m_rnti = it->second;
               alloc.m_resPscch = poolIt->second.m_nextAllocation.size ();
               alloc.m_slItrp = m_slItrp;
-              alloc.m_rbStart = poolIt->second.m_nextAllocation.size () * m_slGrantSize;
-              alloc.m_rbLen = m_slGrantSize;
+              alloc.m_rbStart = poolIt->second.m_nextAllocation.size () * specialized_GrantSize;
+              alloc.m_rbLen = specialized_GrantSize;
 
               //adjust PSSCH frame to next period
               SidelinkCommResourcePool::SubframeInfo tmp;
