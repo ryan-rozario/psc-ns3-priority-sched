@@ -778,6 +778,8 @@ int main (int argc, char *argv[])
           Ipv4Address localAddrs =  clientApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
           d2d[shard1[ac]].address1 = localAddrs;
           oss << "tx\t" << d2d[shard1[ac]].d2dNodes.Get (0)->GetId () << "\t" << d2d[shard1[ac]].d2dNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          uint8_t nt = clientApps_shard1.Get (ac)->GetNode ()->nodeType;
+          std::cout << "Tx address: " << localAddrs << " node type " << unsigned(nt) << std::endl;
           clientApps_shard1.Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }  
@@ -797,6 +799,8 @@ int main (int argc, char *argv[])
           Ipv4Address localAddrs =  serverApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
           d2d[shard1[ac]].address2 = localAddrs;
           oss << "rx\t" << d2d[shard1[ac]].d2dNodes.Get (1)->GetId () << "\t" << d2d[shard1[ac]].d2dNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          uint8_t nt = serverApps_shard1.Get (ac)->GetNode ()->nodeType;
+          std::cout << "Rx address: " << localAddrs << " node type " << unsigned(nt) << std::endl;
           serverApps_shard1.Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
@@ -819,7 +823,7 @@ int main (int argc, char *argv[])
           clientApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
           Ipv6Address localAddrs =  clientApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
           uint8_t nt = clientApps_shard1.Get (ac)->GetNode ()->nodeType;
-          std::cout << "Tx address: " << localAddrs << " node type " << nt << std::endl;
+          std::cout << "Tx address: " << localAddrs << " node type " << unsigned(nt)  << std::endl;
           oss << "tx\t" << d2d[1].d2dNodes.Get (0)->GetId () << "\t" << d2d[1].d2dNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           clientApps_shard1.Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
@@ -831,7 +835,7 @@ int main (int argc, char *argv[])
           serverApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
           Ipv6Address localAddrs =  serverApps_shard1.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
           uint8_t nt = serverApps_shard1.Get (ac)->GetNode ()->nodeType;
-          std::cout << "Rx address: " << localAddrs << " node type " << nt << std::endl;
+          std::cout << "Rx address: " << localAddrs << " node type " << unsigned(nt)  << std::endl;
           oss << "rx\t" << d2d[1].d2dNodes.Get (1)->GetId () << "\t" << d2d[1].d2dNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           serverApps_shard1.Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
