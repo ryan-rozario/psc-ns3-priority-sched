@@ -1285,7 +1285,7 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
         {
           if (poolIt->second.m_nextAllocation.find ((*it).second) == poolIt->second.m_nextAllocation.end ())
             {
-              std::cout<< it->second <<" priority alloc test "<< it->first<<  std::endl;
+              //std::cout<< it->second <<" priority alloc test "<< it->first<<  std::endl;
               //new allocation
               PoolUserAllocation alloc;
               alloc.m_rnti = it->second;
@@ -1869,6 +1869,7 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                     }
                   else
                     {
+                      std::cout<<"update buffer for "<<rnti<<" sidelink buffer "<< buffer << std::endl;
                       // update the buffer size value
                       (*itSlBsr).second = buffer;
                       NS_LOG_INFO (this << " Update RNTI " << rnti << " Sidelink queue " << buffer);
