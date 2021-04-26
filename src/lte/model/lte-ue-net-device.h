@@ -84,13 +84,6 @@ public:
   Ptr<LteUeRrc> GetRrc () const;
 
   /**
-   * \brief Set the nodetype
-   * \return
-   */
-
-  void SetNodeType (uint8_t nt);
-
-  /**
    * \brief Get the Phy.
    * \return the LTE UE Phy
    */
@@ -207,9 +200,6 @@ private:
   uint32_t m_csgId; ///< the CSG ID
 
   std::map < uint8_t, Ptr<ComponentCarrierUe> > m_ccMap; ///< CC map
-
-  uint64_t m_nodeType; ///< the node type commercial or psc
-
 }; // end of class LteUeNetDevice
 
 } // namespace ns3
