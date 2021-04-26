@@ -261,6 +261,9 @@ public:
    */
   void SetImsi (uint64_t imsi);
 
+  //set the node type
+  void SetNodeType (uint8_t nodeType);
+
   /**
    * \brief Store the previous cell id
    *
@@ -1591,6 +1594,11 @@ private:
 //Sidelink related code
   /// Sidelink configuration
   Ptr<LteSlUeRrc> m_sidelinkConfiguration;
+
+  //node type
+  uint8_t m_nodeType;
+
+
   /**
    * Used to detect changes in tx pool
    */

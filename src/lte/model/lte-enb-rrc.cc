@@ -1040,6 +1040,7 @@ UeManager::RecvRrcConnectionReconfigurationCompleted (LteRrcSap::RrcConnectionRe
           req.m_rnti = m_rnti;
           req.m_transmissionMode = m_physicalConfigDedicated.antennaInfo.transmissionMode;
           req.m_slDestinations = m_slDestinations;
+          req.m_nodeType = m_nodeType;
           for (uint8_t i = 0; i < m_rrc->m_numberOfComponentCarriers; i++)
             {
               m_rrc->m_cmacSapProvider.at (i)->UeUpdateConfigurationReq (req);
@@ -1070,6 +1071,7 @@ UeManager::RecvRrcConnectionReconfigurationCompleted (LteRrcSap::RrcConnectionRe
           req.m_rnti = m_rnti;
           req.m_transmissionMode = m_physicalConfigDedicated.antennaInfo.transmissionMode;
           req.m_slDestinations = m_slDestinations;
+          req.m_nodeType = m_nodeType;
           for (uint8_t i = 0; i < m_rrc->m_numberOfComponentCarriers; i++)
             {
               m_rrc->m_cmacSapProvider.at (i)->UeUpdateConfigurationReq (req);
@@ -1255,6 +1257,8 @@ UeManager::RecvSidelinkUeInformation (LteRrcSap::SidelinkUeInformation msg)
             {
               m_slDestinations.push_back (msg.slCommTxResourceReq.slDestinationInfoList.SlDestinationIdentity[i]);
             }
+          
+          m_nodeType = msg.nodeType;
 
           //populate dedicated resources
           LteRrcSap::SlCommConfig dedicatedResource;
@@ -1342,6 +1346,7 @@ UeManager::RecvSidelinkUeInformation (LteRrcSap::SidelinkUeInformation msg)
           msg2.haveSlCommConfig = true;
           msg2.slCommConfig = dedicatedResource;
           m_slDestinations.clear ();
+          //add statement here to remove nodetype information not sure right now how
           m_slPoolChanged = true;
         }
     }

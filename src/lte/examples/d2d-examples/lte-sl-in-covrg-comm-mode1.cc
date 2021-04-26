@@ -45,6 +45,7 @@
 #include <cfloat>
 #include <sstream>
 
+
 using namespace ns3;
 
 // This trace will log packet transmissions and receptions from the application
@@ -52,6 +53,9 @@ using namespace ns3;
 // address passed by the trace is not set (i.e., is '0.0.0.0' or '::').  The
 // trace writes to a file stream provided by the first argument; by default,
 // this trace file is 'UePacketTrace.tr'
+
+
+
 void
 UePacketTrace (Ptr<OutputStreamWrapper> stream, const Address &localAddrs, std::string context, Ptr<const Packet> p, const Address &srcAddrs, const Address &dstAddrs)
 {
@@ -190,22 +194,41 @@ int main (int argc, char *argv[])
   //Sidelink Round Robin scheduler
   lteHelper->SetSchedulerType ("ns3::RrSlFfMacScheduler");
 
+  int m = 5; // Number of PSC nodes
+  int n = 10; // Number of Commercial nodes
+  
+
   //Create nodes (eNb + UEs)
   NodeContainer enbNode;
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  ueNodes.Create (2);
-  NS_LOG_INFO ("UE 1 node id = [" << ueNodes.Get (0)->GetId () << "]");
-  NS_LOG_INFO ("UE 2 node id = [" << ueNodes.Get (1)->GetId () << "]");
+  uint8_t psc_type = 1;
+  ueNodes.Create_new (m, psc_type);
 
+  for(int i=0; i<m ; i++){
+    NS_LOG_INFO ("PSC node id = [" << ueNodes.Get (i)->GetId () << "]");
+  }
+
+  
+  uint8_t com_type = 2;
+  ueNodes.Create_new (n, com_type);
+
+  for(int i=0; i<n ; i++){
+    NS_LOG_INFO ("Commercial node id = [" << ueNodes.Get (i)->GetId () << "]");
+  }
+  
   //Position of the nodes
   Ptr<ListPositionAllocator> positionAllocEnb = CreateObject<ListPositionAllocator> ();
-  positionAllocEnb->Add (Vector (0.0, 0.0, 30.0));
-  Ptr<ListPositionAllocator> positionAllocUe1 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe1->Add (Vector (10.0, 0.0, 1.5));
-  Ptr<ListPositionAllocator> positionAllocUe2 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe2->Add (Vector (-10.0, 0.0, 1.5));
+  positionAllocEnb->Add (Vector (0.0, 0.0, 0.0));
+
+
+  ObjectFactory pos;
+  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
+  pos.Set ("X", StringValue ("ns3::UniformRandomVariable[Min=-40.0|Max=40.0]"));
+  pos.Set ("Y", StringValue ("ns3::UniformRandomVariable[Min=-40.0|Max=40.0]"));
+  Ptr <PositionAllocator> taPositionAlloc = pos.Create ()->GetObject <PositionAllocator> ();
+
 
   //Install mobility
   MobilityHelper mobilityeNodeB;
@@ -213,15 +236,13 @@ int main (int argc, char *argv[])
   mobilityeNodeB.SetPositionAllocator (positionAllocEnb);
   mobilityeNodeB.Install (enbNode);
 
-  MobilityHelper mobilityUe1;
-  mobilityUe1.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe1.SetPositionAllocator (positionAllocUe1);
-  mobilityUe1.Install (ueNodes.Get (0));
 
-  MobilityHelper mobilityUe2;
-  mobilityUe2.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe2.SetPositionAllocator (positionAllocUe2);
-  mobilityUe2.Install (ueNodes.Get (1));
+
+  MobilityHelper mobilityUe;
+  mobilityUe.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  mobilityUe.SetPositionAllocator (taPositionAlloc);
+  mobilityUe.Install (ueNodes);
+
 
   //Install LTE devices to the nodes and fix the random number stream
   int64_t randomStream = 1;
@@ -252,9 +273,9 @@ int main (int argc, char *argv[])
   pfactory.SetControlPeriod ("sf40");
   pfactory.SetControlBitmap (0x00000000FF); //8 subframes for PSCCH
   pfactory.SetControlOffset (0);
-  pfactory.SetControlPrbNum (22);
+  pfactory.SetControlPrbNum (2);
   pfactory.SetControlPrbStart (0);
-  pfactory.SetControlPrbEnd (49);
+  pfactory.SetControlPrbEnd (12);
 
   //Data: The ns3::RrSlFfMacScheduler is responsible to handle the parameters
 
@@ -327,7 +348,16 @@ int main (int argc, char *argv[])
   OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200);
 
-  ApplicationContainer clientApps = sidelinkClient.Install (ueNodes.Get (0));
+  ApplicationContainer clientApps;
+
+  for(int i=0;i<m;i+=2){
+    clientApps.Add(sidelinkClient.Install (ueNodes.Get (i)));
+  }
+
+  for(int i=m;i<m+n;i+=2){
+    clientApps.Add(sidelinkClient.Install (ueNodes.Get (i)));
+  }
+
   //onoff application will send the first packet at :
   //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
   clientApps.Start (slBearersActivationTime + Seconds (0.9));
@@ -335,8 +365,16 @@ int main (int argc, char *argv[])
 
   ApplicationContainer serverApps;
   PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
-  serverApps = sidelinkSink.Install (ueNodes.Get (1));
+  for(int i=1;i<n;i+=2){
+    serverApps.Add(sidelinkSink.Install (ueNodes.Get (i)));
+  }
+  for(int i=m+1;i<m+n;i+=2){
+    serverApps.Add(sidelinkSink.Install (ueNodes.Get (i)));
+  }
   serverApps.Start (Seconds (2.0));
+
+
+  
 
   proseHelper->ActivateSidelinkBearer (slBearersActivationTime, ueDevs, tft);
   ///*** End of application configuration ***///
@@ -394,7 +432,7 @@ int main (int argc, char *argv[])
           serverApps.Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
-    }
+    } 
 
   NS_LOG_INFO ("Enabling Sidelink traces...");
   lteHelper->EnableSidelinkTraces ();

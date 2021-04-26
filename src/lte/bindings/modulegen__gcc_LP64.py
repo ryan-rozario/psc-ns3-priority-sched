@@ -7291,6 +7291,8 @@ def register_Ns3FfMacCschedSapProviderCschedUeConfigReqParameters_methods(root_m
     cls.add_instance_attribute('m_simultaneousAckNackAndCqi', 'bool', is_const=False)
     ## ff-mac-csched-sap.h (module 'lte'): ns3::FfMacCschedSapProvider::CschedUeConfigReqParameters::m_slDestinations [variable]
     cls.add_instance_attribute('m_slDestinations', 'std::vector< unsigned int >', is_const=False)
+    ## ff-mac-csched-sap.h (module 'lte'): ns3::FfMacCschedSapProvider::CschedUeConfigReqParameters::m_nodeType [variable]
+    cls.add_instance_attribute('m_nodeType', 'uint8_t', is_const=False)
     ## ff-mac-csched-sap.h (module 'lte'): ns3::FfMacCschedSapProvider::CschedUeConfigReqParameters::m_spsConfig [variable]
     cls.add_instance_attribute('m_spsConfig', 'ns3::SpsConfig_s', is_const=False)
     ## ff-mac-csched-sap.h (module 'lte'): ns3::FfMacCschedSapProvider::CschedUeConfigReqParameters::m_spsConfigPresent [variable]
@@ -10397,6 +10399,8 @@ def register_Ns3LteEnbCmacSapProviderUeConfig_methods(root_module, cls):
     cls.add_instance_attribute('m_rnti', 'uint16_t', is_const=False)
     ## lte-enb-cmac-sap.h (module 'lte'): ns3::LteEnbCmacSapProvider::UeConfig::m_slDestinations [variable]
     cls.add_instance_attribute('m_slDestinations', 'std::vector< unsigned int >', is_const=False)
+    ## ff-mac-csched-sap.h (module 'lte'): ns3::FfMacCschedSapProvider::CschedUeConfigReqParameters::m_nodeType [variable]
+    cls.add_instance_attribute('m_nodeType', 'uint8_t', is_const=False)
     ## lte-enb-cmac-sap.h (module 'lte'): ns3::LteEnbCmacSapProvider::UeConfig::m_transmissionMode [variable]
     cls.add_instance_attribute('m_transmissionMode', 'uint8_t', is_const=False)
     return
@@ -12139,6 +12143,8 @@ def register_Ns3LteRrcSapSidelinkUeInformation_methods(root_module, cls):
     cls.add_instance_attribute('discRxInterest', 'bool', is_const=False)
     ## lte-rrc-sap.h (module 'lte'): ns3::LteRrcSap::SidelinkUeInformation::discTxResourceReq [variable]
     cls.add_instance_attribute('discTxResourceReq', 'uint8_t', is_const=False)
+    ## lte-rrc-sap.h (module 'lte'): ns3::LteRrcSap::SidelinkUeInformation::nodeType [variable]
+    cls.add_instance_attribute('nodeType', 'uint8_t', is_const=False)
     ## lte-rrc-sap.h (module 'lte'): ns3::LteRrcSap::SidelinkUeInformation::haveCommRxInterestedFreq [variable]
     cls.add_instance_attribute('haveCommRxInterestedFreq', 'bool', is_const=False)
     ## lte-rrc-sap.h (module 'lte'): ns3::LteRrcSap::SidelinkUeInformation::haveCommTxResourceReq [variable]

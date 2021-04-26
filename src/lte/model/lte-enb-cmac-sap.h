@@ -132,6 +132,12 @@ public:
      * The index is used by SL BSR to indicate which group the request is for
      */
     std::vector<uint32_t> m_slDestinations;
+
+    /**
+     * This value is used to denote what the type of node is
+     * The node can be for public safety or for commercial purpose
+     */
+    uint8_t   m_nodeType; ///< type of node psc or commercial
   };
 
   /** 

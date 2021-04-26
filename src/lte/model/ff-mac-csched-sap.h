@@ -197,6 +197,9 @@ public:
     std::vector <struct VendorSpecificListElement_s> m_vendorSpecificList; ///< vendorSpecificList
 
     std::vector <uint32_t> m_slDestinations; ///< List of Sidelink destinations
+
+    uint8_t   m_nodeType; ///< type of node psc or commercial
+
   };
 
   /**

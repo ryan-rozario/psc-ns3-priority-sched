@@ -1005,6 +1005,8 @@ LteEnbMac::DoUeUpdateConfigurationReq (LteEnbCmacSapProvider::UeConfig params)
   req.m_transmissionMode = params.m_transmissionMode;
   req.m_slDestinations = params.m_slDestinations;
   NS_LOG_DEBUG ("Sidelink: adding " << params.m_slDestinations.size () << " destinations for UE with RNTI " << params.m_rnti);
+  req.m_nodeType = params.m_nodeType;
+  NS_LOG_DEBUG ("Node Type : adding " << params.m_nodeType << " node type for UE with RNTI " << params.m_rnti);
   req.m_reconfigureFlag = true;
   m_cschedSapProvider->CschedUeConfigReq (req);
 }

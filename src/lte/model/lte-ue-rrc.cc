@@ -532,6 +532,14 @@ LteUeRrc::SetImsi (uint64_t imsi)
     }
 }
 
+//maybe we dont need this
+void
+LteUeRrc::SetNodeType (uint8_t nodeType)
+{
+  NS_LOG_FUNCTION (this);
+  m_nodeType = nodeType;
+}
+
 void
 LteUeRrc::StorePreviousCellId (uint16_t cellId)
 {
@@ -3842,6 +3850,9 @@ LteUeRrc::AddSlrb (uint32_t source, uint32_t destination, uint8_t lcid)
   slbInfo->m_destinationL2Id = destination;
   slbInfo->m_logicalChannelIdentity = lcid;
   m_sidelinkConfiguration->AddSidelinkRadioBearer (slbInfo);
+  
+  //this probably should not be here
+  //m_sidelinkConfiguration->SetNodeType(source, nodeType);
 
   //create PDCP/RLC stack
   ObjectFactory rlcObjectFactory;
@@ -4409,6 +4420,7 @@ LteUeRrc::SendSidelinkUeInformation (bool txComm, bool rxComm, bool txDisc, bool
                   sidelinkUeInformation.haveCommTxResourceReq = true;
                   sidelinkUeInformation.slCommTxResourceReq.carrierFreq = GetUlEarfcn ();
                   sidelinkUeInformation.slCommTxResourceReq.slDestinationInfoList.nbDestinations = destinations.size ();
+                  sidelinkUeInformation.nodeType = m_sidelinkConfiguration->GetNodeType();
                   std::list <uint32_t>::iterator it;
                   int index = 0;
                   NS_ASSERT_MSG (destinations.size () <= MAXSL_DEST, "Maximum number of destinations (" << MAXSL_DEST << ") reached");

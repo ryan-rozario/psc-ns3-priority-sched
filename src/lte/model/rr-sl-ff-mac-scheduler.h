@@ -360,7 +360,7 @@ private:
 
   std::map <uint16_t,uint8_t> m_uesTxMode; ///< txMode of the UEs
 
-
+  std::map <uint16_t,uint8_t> m_uesNodeType; ///< NodeType of the UEs Commercial or PSC
 
   // HARQ attributes
   /**
@@ -415,6 +415,8 @@ private:
     uint32_t m_npscch; ///< number of PSCCH available in the pool
 
     std::map <uint16_t,uint32_t> m_ceSlBsrRxed; ///< map the RNTI and Sidelink BSR request
+
+    std::vector<std::pair<uint16_t,uint32_t>>  m_RntiPriority; ///< the  Priority of request to  RNTI 
 
     std::map <uint16_t, PoolUserAllocation> m_currentAllocation; ///< map the RNTI and current allocation
     std::map <uint16_t, PoolUserAllocation> m_nextAllocation; ///< map the RNTI and next allocation

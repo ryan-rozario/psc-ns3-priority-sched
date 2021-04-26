@@ -626,6 +626,8 @@ private:
    */
   std::vector<uint32_t> m_slDestinations;
 
+  uint8_t   m_nodeType; ///< type of node psc or commercial
+
   bool m_slPoolChanged; ///< Define if Sidelink Communication pool has changed
 
   uint8_t m_discTxResourceReq; ///< Sidelink Discovery resources requested by the UE

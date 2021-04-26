@@ -217,6 +217,12 @@ public:
   static bool ChecksumEnabled (void);
 
 
+  //nodetype functions
+  void SetNodeType(uint8_t nt);
+
+  uint8_t nodeType;
+
+
 protected:
   /**
    * The dispose method. Subclasses must override this method

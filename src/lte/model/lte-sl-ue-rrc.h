@@ -263,12 +263,20 @@ public:
    */
   std::list <uint32_t> GetTxDestinations ();
   /**
-   * \brief Add Sidelink radio bearer function
-   * Attempts to add a sidelink radio bearer
-   * \param slb LteSidelinkRadioBearerInfo pointer
-   * \return True if the sidelink was successfully added, else false such as when
-   * an identical bearer already exists
+   * \brief Get node type
+   * \return This gives the type of node psc or commercial
    */
+
+  uint8_t GetNodeType ();
+
+    /**
+   * \brief Set node type
+   * \param nodeTypeValue value based on the type of node
+   * \return This sets the type of node psc or commercial
+   */
+
+  void SetNodeType (uint8_t nodeTypeValue );
+
   bool AddSidelinkRadioBearer (Ptr<LteSidelinkRadioBearerInfo> slb);
   /**
    * \brief Delete Sidelink radio bearer function
@@ -720,6 +728,13 @@ private:
    * (to be set in the scenario)
    */
   uint8_t m_discTxResources;
+
+  /**
+   * This value is used to denote what the type of node is
+   * The node can be for public safety or for commercial purpose
+   */
+  uint8_t   nodeType; ///< type of node psc or commercial
+
   /**
    * frequency that the UE is supposed to monitor for discovery announcements
    */
