@@ -1851,7 +1851,7 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                       poolIt->second.m_ceSlBsrRxed.insert ( std::pair<uint16_t, uint32_t > (rnti, buffer));
                       NS_LOG_INFO (this << " Insert RNTI " << rnti << " Sidelink queue " << buffer);
                       
-                      std::cout << this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority) << std::endl;
+                      //std::cout << this << " RNTI " << rnti << " Type " << unsigned(nodeTypeForPriority) << std::endl;
 
                       uint32_t priority_val;
                       //set the initial priority value
@@ -1869,7 +1869,7 @@ RrSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider:
                     }
                   else
                     {
-                      std::cout<<"update buffer for "<<rnti<<" sidelink buffer "<< buffer << std::endl;
+                      //std::cout<<"update buffer for "<<rnti<<" sidelink buffer "<< buffer << std::endl;
                       // update the buffer size value
                       (*itSlBsr).second = buffer;
                       NS_LOG_INFO (this << " Update RNTI " << rnti << " Sidelink queue " << buffer);

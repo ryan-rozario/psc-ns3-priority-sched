@@ -532,7 +532,6 @@ LteUeRrc::SetImsi (uint64_t imsi)
     }
 }
 
-//maybe we dont need this
 void
 LteUeRrc::SetNodeType (uint8_t nodeType)
 {

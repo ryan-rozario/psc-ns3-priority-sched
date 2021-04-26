@@ -194,7 +194,7 @@ int main (int argc, char *argv[])
   //Sidelink Round Robin scheduler
   lteHelper->SetSchedulerType ("ns3::RrSlFfMacScheduler");
 
-  int m = 5; // Number of PSC nodes
+  int m = 10; // Number of PSC nodes
   int n = 10; // Number of Commercial nodes
   
 
@@ -273,9 +273,9 @@ int main (int argc, char *argv[])
   pfactory.SetControlPeriod ("sf40");
   pfactory.SetControlBitmap (0x00000000FF); //8 subframes for PSCCH
   pfactory.SetControlOffset (0);
-  pfactory.SetControlPrbNum (2);
+  pfactory.SetControlPrbNum (3);
   pfactory.SetControlPrbStart (0);
-  pfactory.SetControlPrbEnd (12);
+  pfactory.SetControlPrbEnd (10);
 
   //Data: The ns3::RrSlFfMacScheduler is responsible to handle the parameters
 

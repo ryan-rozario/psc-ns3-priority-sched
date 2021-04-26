@@ -1055,7 +1055,7 @@ LteHelper::InstallSingleUeDevice (Ptr<Node> n)
       uint8_t nodeType;
       nodeType = n->nodeType;
 
-      std::cout<<"nodetype in lte helper"<<unsigned(nodeType)<<std::endl;
+      //std::cout<<"nodetype in lte helper"<<unsigned(nodeType)<<std::endl;
 
       ueSidelinkConfiguration->SetNodeType(nodeType);
     }
