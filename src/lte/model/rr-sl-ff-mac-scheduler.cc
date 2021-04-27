@@ -1276,7 +1276,7 @@ RrSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sch
         {
           NS_LOG_DEBUG ("Pool already initialized");
         }
-
+  
       std::vector<std::pair<uint16_t,uint32_t>>::iterator it;
 
       std::sort(poolIt->second.m_RntiPriority.begin(), poolIt->second.m_RntiPriority.end());

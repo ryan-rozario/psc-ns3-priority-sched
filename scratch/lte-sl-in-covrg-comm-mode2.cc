@@ -33,7 +33,7 @@
  * subject to copyright protection within the United States.
  */
 
-#include "ns3/netanim-module.h"
+
 #include "ns3/lte-module.h"
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -45,6 +45,10 @@
 #include <cfloat>
 #include <sstream>
 
+#include <ns3/flow-monitor.h>
+#include <ns3/flow-monitor-helper.h>
+#include <ns3/flow-monitor-module.h>
+
 using namespace ns3;
 
 // This trace will log packet transmissions and receptions from the application
@@ -52,6 +56,9 @@ using namespace ns3;
 // address passed by the trace is not set (i.e., is '0.0.0.0' or '::').  The
 // trace writes to a file stream provided by the first argument; by default,
 // this trace file is 'UePacketTrace.tr'
+
+
+
 void
 UePacketTrace (Ptr<OutputStreamWrapper> stream, const Address &localAddrs, std::string context, Ptr<const Packet> p, const Address &srcAddrs, const Address &dstAddrs)
 {
@@ -104,16 +111,6 @@ UePacketTrace (Ptr<OutputStreamWrapper> stream, const Address &localAddrs, std::
       *stream->GetStream () << "Unknown address type!" << std::endl;
     }
 }
-
-double printRandoms(int lower, int upper)
-{
-   
-        double num = (rand() %
-           (upper - lower + 1)) + lower;
-           return num;
-    
-}
-  
 
 /*
  * The topology is the following:
@@ -200,30 +197,43 @@ int main (int argc, char *argv[])
   //Sidelink Round Robin scheduler
   lteHelper->SetSchedulerType ("ns3::RrSlFfMacScheduler");
 
+  FlowMonitorHelper flowmon;
+  Ptr<FlowMonitor> monitor = flowmon.InstallAll();
+
+  int m = 5; // Number of PSC nodes
+  int n = 10; // Number of Commercial nodes
+  
+
   //Create nodes (eNb + UEs)
   NodeContainer enbNode;
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  ueNodes.Create_new(12,1);
-  ueNodes.Create_new(8,2);
-  NS_LOG_INFO ("UE 1 node id = [" << ueNodes.Get (0)->GetId () << "]");
-  NS_LOG_INFO ("UE 2 node id = [" << ueNodes.Get (1)->GetId () << "]");
+  uint8_t psc_type = 1;
+  ueNodes.Create_new (m, psc_type);
 
+  for(int i=0; i<m ; i++){
+    NS_LOG_INFO ("PSC node id = [" << ueNodes.Get (i)->GetId () << "]");
+  }
+
+  
+  uint8_t com_type = 2;
+  ueNodes.Create_new (n, com_type);
+
+  for(int i=0; i<n ; i++){
+    NS_LOG_INFO ("Commercial node id = [" << ueNodes.Get (i)->GetId () << "]");
+  }
+  
   //Position of the nodes
   Ptr<ListPositionAllocator> positionAllocEnb = CreateObject<ListPositionAllocator> ();
   positionAllocEnb->Add (Vector (0.0, 0.0, 0.0));
 
 
-  Ptr<ListPositionAllocator> positionAllocUe1[20];
-
-  for(int i=0;i<20;i++)
-  {
-      positionAllocUe1[i] =  CreateObject<ListPositionAllocator> ();
-        positionAllocUe1[i]->Add (Vector (printRandoms(-10,10),printRandoms(-10,10), 0.0));
-
-  }
-   
+  ObjectFactory pos;
+  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
+  pos.Set ("X", StringValue ("ns3::UniformRandomVariable[Min=-40.0|Max=40.0]"));
+  pos.Set ("Y", StringValue ("ns3::UniformRandomVariable[Min=-40.0|Max=40.0]"));
+  Ptr <PositionAllocator> taPositionAlloc = pos.Create ()->GetObject <PositionAllocator> ();
 
 
   //Install mobility
@@ -233,16 +243,12 @@ int main (int argc, char *argv[])
   mobilityeNodeB.Install (enbNode);
 
 
-  MobilityHelper mobilityUe1[20];
 
-   for(int i=0;i<20;i++)
-  {
-      mobilityUe1[i].SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe1[i].SetPositionAllocator (positionAllocUe1[i]);
-  mobilityUe1[i].Install (ueNodes.Get (i));
+  MobilityHelper mobilityUe;
+  mobilityUe.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  mobilityUe.SetPositionAllocator (taPositionAlloc);
+  mobilityUe.Install (ueNodes);
 
-  }
-   
 
   //Install LTE devices to the nodes and fix the random number stream
   int64_t randomStream = 1;
@@ -273,9 +279,9 @@ int main (int argc, char *argv[])
   pfactory.SetControlPeriod ("sf40");
   pfactory.SetControlBitmap (0x00000000FF); //8 subframes for PSCCH
   pfactory.SetControlOffset (0);
-  pfactory.SetControlPrbNum (22);
+  pfactory.SetControlPrbNum (2);
   pfactory.SetControlPrbStart (0);
-  pfactory.SetControlPrbEnd (49);
+  pfactory.SetControlPrbEnd (12);
 
   //Data: The ns3::RrSlFfMacScheduler is responsible to handle the parameters
 
@@ -345,53 +351,36 @@ int main (int argc, char *argv[])
   ///*** Configure applications ***///
 
   //Set Application in the UEs
-  // OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
-  // sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200);
-
-  // ApplicationContainer clientApps = sidelinkClient.Install (ueNodes.Get (0));
-  // //onoff application will send the first packet at :
-  // //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
-  // clientApps.Start (slBearersActivationTime + Seconds (0.9));
-  // clientApps.Stop (simTime - slBearersActivationTime + Seconds (1.0));
-
-  // ApplicationContainer serverApps;
-  // PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
-  // serverApps = sidelinkSink.Install (ueNodes.Get (1));
-  // serverApps.Start (Seconds (2.0));
-
-  // proseHelper->ActivateSidelinkBearer (slBearersActivationTime, ueDevs, tft);
-  ///*** End of application configuration ***///
-
-  ///*** Configure applications ***///
-
-  //Set Application in the UEs
   OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200);
 
   ApplicationContainer clientApps;
-for(int i=0;i<20;i=i+2)
-{
 
-  ApplicationContainer clientApps1 = sidelinkClient.Install (ueNodes.Get (i));
+  for(int i=0;i<m;i+=2){
+    clientApps.Add(sidelinkClient.Install (ueNodes.Get (i)));
+  }
+
+  for(int i=m;i<m+n;i+=2){
+    clientApps.Add(sidelinkClient.Install (ueNodes.Get (i)));
+  }
+
   //onoff application will send the first packet at :
   //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
-  clientApps1.Start (slBearersActivationTime + Seconds (0.9));
-  clientApps1.Stop (simTime - slBearersActivationTime + Seconds (1.0));
-  clientApps.Add(clientApps1);
-
-}
-  
+  clientApps.Start (slBearersActivationTime + Seconds (0.9));
+  clientApps.Stop (simTime - slBearersActivationTime + Seconds (1.0));
 
   ApplicationContainer serverApps;
-
   PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
+  for(int i=1;i<n;i+=2){
+    serverApps.Add(sidelinkSink.Install (ueNodes.Get (i)));
+  }
+  for(int i=m+1;i<m+n;i+=2){
+    serverApps.Add(sidelinkSink.Install (ueNodes.Get (i)));
+  }
+  serverApps.Start (Seconds (2.0));
 
-  for(int i=1;i<20;i=i+2)
-{ 
-  ApplicationContainer serverApps1 = sidelinkSink.Install (ueNodes.Get (i));
-  serverApps1.Start (Seconds (2.0));
-  serverApps.Add(serverApps1);
-}
+
+  
 
   proseHelper->ActivateSidelinkBearer (slBearersActivationTime, ueDevs, tft);
   ///*** End of application configuration ***///
@@ -411,7 +400,7 @@ for(int i=0;i<20;i=i+2)
         {
           Ipv4Address localAddrs =  clientApps.Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
           std::cout << "Tx address: " << localAddrs << std::endl;
-          oss << "tx\t" << ueNodes.Get (ac)->GetId () << "\t" << ueNodes.Get (ac)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          oss << "tx\t" << ueNodes.Get (0)->GetId () << "\t" << ueNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           clientApps.Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
@@ -421,7 +410,7 @@ for(int i=0;i<20;i=i+2)
         {
           Ipv4Address localAddrs =  serverApps.Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
           std::cout << "Rx address: " << localAddrs << std::endl;
-          oss << "rx\t" << ueNodes.Get (10+ac)->GetId () << "\t" << ueNodes.Get (10+ac)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          oss << "rx\t" << ueNodes.Get (1)->GetId () << "\t" << ueNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           serverApps.Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
@@ -434,7 +423,7 @@ for(int i=0;i<20;i=i+2)
           clientApps.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
           Ipv6Address localAddrs =  clientApps.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
           std::cout << "Tx address: " << localAddrs << std::endl;
-          oss << "tx\t" << ueNodes.Get (ac)->GetId () << "\t" << ueNodes.Get (0)->GetDevice (ac)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          oss << "tx\t" << ueNodes.Get (0)->GetId () << "\t" << ueNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           clientApps.Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
@@ -445,11 +434,11 @@ for(int i=0;i<20;i=i+2)
           serverApps.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
           Ipv6Address localAddrs =  serverApps.Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
           std::cout << "Rx address: " << localAddrs << std::endl;
-          oss << "rx\t" << ueNodes.Get (10+ac)->GetId () << "\t" << ueNodes.Get (10+ac)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
+          oss << "rx\t" << ueNodes.Get (1)->GetId () << "\t" << ueNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
           serverApps.Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
           oss.str ("");
         }
-    }
+    } 
 
   NS_LOG_INFO ("Enabling Sidelink traces...");
   lteHelper->EnableSidelinkTraces ();
@@ -458,10 +447,69 @@ for(int i=0;i<20;i=i+2)
 
   Simulator::Stop (simTime);
 
-  AnimationInterface anim("acn_project.xml");
-
-
   Simulator::Run ();
+
+
+  uint32_t SentPackets = 0;
+  uint32_t ReceivedPackets = 0;
+  uint32_t LostPackets = 0;
+
+  int j=0;
+  float AvgThroughput = 0;
+  Time Jitter;
+  Time Delay;
+
+  Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
+    std::map<FlowId, FlowMonitor::FlowStats> stats = monitor->GetFlowStats ();
+
+    for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator iter = stats.begin (); iter != stats.end (); ++iter)
+      {
+      Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (iter->first);
+
+  NS_LOG_UNCOND("----Flow ID:" <<iter->first);
+  NS_LOG_UNCOND("Src Addr" <<t.sourceAddress << "Dst Addr "<< t.destinationAddress);
+  NS_LOG_UNCOND("Sent Packets=" <<iter->second.txPackets);
+  NS_LOG_UNCOND("Received Packets =" <<iter->second.rxPackets);
+  NS_LOG_UNCOND("Lost Packets =" <<iter->second.txPackets-iter->second.rxPackets);
+  NS_LOG_UNCOND("Packet delivery ratio =" <<iter->second.rxPackets*100/iter->second.txPackets << "%");
+  NS_LOG_UNCOND("Packet loss ratio =" << (iter->second.txPackets-iter->second.rxPackets)*100/iter->second.txPackets << "%");
+  NS_LOG_UNCOND("Delay =" <<iter->second.delaySum);
+  NS_LOG_UNCOND("Jitter =" <<iter->second.jitterSum);
+  NS_LOG_UNCOND("Throughput =" <<iter->second.rxBytes * 8.0/(iter->second.timeLastRxPacket.GetSeconds()-iter->second.timeFirstTxPacket.GetSeconds())/1024<<"Kbps");
+
+  SentPackets = SentPackets +(iter->second.txPackets);
+  ReceivedPackets = ReceivedPackets + (iter->second.rxPackets);
+  LostPackets = LostPackets + (iter->second.txPackets-iter->second.rxPackets);
+  AvgThroughput = AvgThroughput + (iter->second.rxBytes * 8.0/(iter->second.timeLastRxPacket.GetSeconds()-iter->second.timeFirstTxPacket.GetSeconds())/1024);
+  Delay = Delay + (iter->second.delaySum);
+  Jitter = Jitter + (iter->second.jitterSum);
+
+  j = j + 1;
+
+  }
+
+  AvgThroughput = AvgThroughput/j;
+  NS_LOG_UNCOND("--------Total Results of the simulation----------"<<std::endl);
+  NS_LOG_UNCOND("Total sent packets  =" << SentPackets);
+  NS_LOG_UNCOND("Total Received Packets =" << ReceivedPackets);
+  NS_LOG_UNCOND("Total Lost Packets =" << LostPackets);
+  NS_LOG_UNCOND("Packet Loss ratio =" << ((LostPackets*100)/SentPackets)<< "%");
+  NS_LOG_UNCOND("Packet delivery ratio =" << ((ReceivedPackets*100)/SentPackets)<< "%");
+  NS_LOG_UNCOND("Average Throughput =" << AvgThroughput<< "Kbps");
+  NS_LOG_UNCOND("End to End Delay =" << Delay);
+  NS_LOG_UNCOND("End to End Jitter delay =" << Jitter);
+  NS_LOG_UNCOND("Total Flow id " << j);
+
+
+
+  monitor->SerializeToXmlFile("d2d.xml", true, true);
+
+
+
+
+
+
+
   Simulator::Destroy ();
   return 0;
 
