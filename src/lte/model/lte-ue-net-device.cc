@@ -185,14 +185,6 @@ LteUeNetDevice::GetRrc (void) const
   return m_rrc;
 }
 
-void
-LteUeNetDevice::SetNodeType (uint8_t nt)
-{
-  NS_LOG_FUNCTION (this);
-  m_rrc->SetNodeType(nt);
-}
-
-
 Ptr<LteUePhy>
 LteUeNetDevice::GetPhy (void) const
 {
